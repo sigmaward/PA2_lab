@@ -419,6 +419,7 @@ public class Server extends Thread {
     {
         //we have two servers --> break it into two like in client run()
         //disconnect when both threads have terminated
+
         Transactions trans = new Transactions();
         long serverStartTime1, serverEndTime1;
         long serverStartTime2, serverEndTime2;
@@ -430,6 +431,8 @@ public class Server extends Thread {
             serverEndTime1 = System.currentTimeMillis();
             System.out.println("\n Terminating server(1) thread - " + " Running time " + (serverEndTime1 - serverStartTime1) + " milliseconds");
 
+            //set status to terminated
+            setServerThreadRunningStatus1("Terminated"); //do i capitalize it?
         }
         else {
             serverStartTime2 = System.currentTimeMillis();
@@ -437,21 +440,20 @@ public class Server extends Thread {
             serverEndTime2 = System.currentTimeMillis();
             System.out.println("\n Terminating server(2) thread - " + " Running time " + (serverEndTime2 - serverStartTime2) + " milliseconds");
 
+            //set status to terminated
+            setServerThreadRunningStatus2("Terminated");
 
         }
 
 
 
-        System.out.println("\n DEBUG : Server.run() - starting server thread " + getServerThreadId() + " " + Network.getServerConnectionStatus());
-
-
-        System.out.println("\n DEBUG : Server.run() - starting server thread " + Network.getServerConnectionStatus());
-
         /* .....................................................................................................................................................................................................*/
+        //if thread1 is terminated and thread2 is terminated:
+        if (getServerThreadRunningStatus1().equals("Terminated") && getServerThreadRunningStatus2().equals("Terminated"))
+        {
+            Network.disconnect(Network.getServerIP());
+        }
 
-        Network.disconnect(Network.getServerIP()); //not client
-        //call and then disconnect
-//        System.out.println("\n Terminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds"); //i separated for 1 and 2
 
     }
 
