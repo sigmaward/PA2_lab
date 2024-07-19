@@ -206,7 +206,7 @@ public class Server extends Thread {
         
         try
         {
-         inputStream = new Scanner(new FileInputStream("account.txt"));
+         inputStream = new Scanner(new FileInputStream("src/account.txt"));
         }
         catch(FileNotFoundException e)
         {
@@ -233,7 +233,7 @@ public class Server extends Thread {
         }
         setNumberOfAccounts(i);			/* Record the number of accounts processed */
         
-        /* System.out.println("\n DEBUG : Server.initializeAccounts() " + getNumberOfAccounts() + " accounts processed"); */
+        System.out.println("\n DEBUG : Server.initializeAccounts() " + getNumberOfAccounts() + " accounts processed"); //uncommented
         
         inputStream.close( );
      }
@@ -341,24 +341,34 @@ public class Server extends Thread {
    
      public double deposit(int i, double amount)
      {  double curBalance;      /* Current account balance */
-       
-     		curBalance = account[i].getBalance( );          /* Get current account balance */
+
+         synchronized (account[i])
+         {
+             curBalance = account[i].getBalance( );          /* Get current account balance */
+
+             /* NEW : A server thread is blocked before updating the 10th , 20th, ... 70th account balance in order to simulate an inconsistency situation */
+             if (((i + 1) % 10 ) == 0)
+             {
+                 try {
+                     Thread.sleep(100);
+                 }
+                 catch (InterruptedException e) {
+
+                 }
+             }//idk if this if-statement should be sync
+
+             System.out.println("\n DEBUG : Server.deposit - " + "i " + i + " Current balance " + curBalance + " Amount " + amount + " " + getServerThreadId());
+
+             account[i].setBalance(curBalance + amount);     /* Deposit amount in the account */
+             return account[i].getBalance ();                /* Return updated account balance */
+             //synchonized as well
+
+         }
+         //synchronizing this block only because imagine client1 wants to deposit in account[0], you don't want client2 to also work on account[0]
+         //however, client2 could do some work on account[1], so it is wiser to synchronize account [i]
+         //in fact, if you sync the whole deposit method, and Thread1 is doing something you're blocking the deposit function to other to the other Threads
         
-     		/* NEW : A server thread is blocked before updating the 10th , 20th, ... 70th account balance in order to simulate an inconsistency situation */
-     		if (((i + 1) % 10 ) == 0)
-     		{
-     			try {
-     					Thread.sleep(100);
-     				}
-     				catch (InterruptedException e) {
-        	
-     				} 
-     		} 
-        
-     		System.out.println("\n DEBUG : Server.deposit - " + "i " + i + " Current balance " + curBalance + " Amount " + amount + " " + getServerThreadId());
-        
-     		account[i].setBalance(curBalance + amount);     /* Deposit amount in the account */
-     		return account[i].getBalance ();                /* Return updated account balance */
+
      }
          
     /**
@@ -369,15 +379,20 @@ public class Server extends Thread {
      */
  
      public double withdraw(int i, double amount)
-     {  double curBalance;      /* Current account balance */
-        
-     	curBalance = account[i].getBalance( );          /* Get current account balance */
-          
-        System.out.println("\n DEBUG : Server.withdraw - " + "i " + i + " Current balance " + curBalance + " Amount " + amount + " " + getServerThreadId());
-        
-        account[i].setBalance(curBalance - amount);     /* Withdraw amount in the account */
-        return account[i].getBalance ();                /* Return updated account balance */
-     	
+     {
+         synchronized (account[i]){
+             double curBalance;      /* Current account balance */ //put it outside of sync block????
+             curBalance = account[i].getBalance( );          /* Get current account balance */
+
+             System.out.println("\n DEBUG : Server.withdraw - " + "i " + i + " Current balance " + curBalance + " Amount " + amount + " " + getServerThreadId());
+
+             account[i].setBalance(curBalance - amount);     /* Withdraw amount in the account */
+
+             return account[i].getBalance ();                /* Return updated account balance */
+
+         }
+         //dont sync the whole method of else no other threads can access this whole withdraw method, only sync account[i]
+
      }
 
     /**
@@ -388,13 +403,24 @@ public class Server extends Thread {
      */
  
      public double query(int i)
-     {  double curBalance;      /* Current account balance */
-        
-     	curBalance = account[i].getBalance( );          /* Get current account balance */
-        
-        System.out.println("\n DEBUG : Server.query - " + "i " + i + " Current balance " + curBalance + " " + getServerThreadId()); 
-        
-        return curBalance;                              /* Return current account balance */
+     {
+//         double curBalance;      /* Current account balance */
+
+        //see slide 24 tut 2
+         // sometimes it is more wasteful to synchronize the whole method when you only need to sync a small portion of the code
+
+         synchronized (account[i]){
+             double curBalance;      /* Current account balance */
+             curBalance = account[i].getBalance( );          /* Get current account balance */
+
+             System.out.println("\n DEBUG : Server.query - " + "i " + i + " Current balance " + curBalance + " " + getServerThreadId());
+
+             return curBalance;
+         }
+
+//        return curBalance;                              /* Return current account balance */
+
+         //sometimes it is more wasteful to synchronized the whole method when you only need to sync a small portion of the code
      }
          
      /**
@@ -456,6 +482,7 @@ public class Server extends Thread {
 
 
     }
+
 
 
 
