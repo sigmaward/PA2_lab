@@ -280,10 +280,14 @@ public class Server extends Thread {
         	 if (!Network.getInBufferStatus().equals("empty"))
         	 { 
         		 System.out.println("\n DEBUG : Server.processTransactions() - transferring in account " + trans.getAccountNumber()); //uncommented
-        		 
-        		 Network.transferIn(trans);                              /* Transfer a transaction from the network input buffer */
-             
-        		 accIndex = findAccount(trans.getAccountNumber());
+
+                 try {
+                     Network.transferIn(trans);                              /* Transfer a transaction from the network input buffer */
+                 } catch (InterruptedException e) {
+                     throw new RuntimeException(e);
+                 }
+
+                 accIndex = findAccount(trans.getAccountNumber());
         		 /* Process deposit operation */
         		 if (trans.getOperationType().equals("DEPOSIT"))
         		 {
@@ -321,9 +325,13 @@ public class Server extends Thread {
         		 }
         		
         		 /* System.out.println("\n DEBUG : Server.processTransactions() - transferring out account " + trans.getAccountNumber()); */
-        		 
-        		 Network.transferOut(trans);                            		/* Transfer a completed transaction from the server to the network output buffer */
-        		 setNumberOfTransactions( (getNumberOfTransactions() +  1) ); 	/* Count the number of transactions processed */
+
+                 try {
+                     Network.transferOut(trans);                            		/* Transfer a completed transaction from the server to the network output buffer */
+                 } catch (InterruptedException e) {
+                     throw new RuntimeException(e);
+                 }
+                 setNumberOfTransactions( (getNumberOfTransactions() +  1) ); 	/* Count the number of transactions processed */
         	 }
          }
          
