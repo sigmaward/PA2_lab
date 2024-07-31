@@ -136,7 +136,8 @@ public class Client extends Thread {
             
         }
         setNumberOfTransactions(i);		/* Record the number of transactions processed */
-        
+
+         System.out.print("");
         /* System.out.println("\n DEBUG : Client.readTransactions() - " + getNumberOfTransactions() + " transactions processed"); */
         
         inputStream.close( );
@@ -162,7 +163,8 @@ public class Client extends Thread {
 
              transaction[i].setTransactionStatus("sent");   /* Set current transaction status */
 
-             System.out.println("\n DEBUG : Client.sendTransactions() - sending transaction on account " + transaction[i].getAccountNumber());
+             System.out.print("");
+//             System.out.println("\n DEBUG : Client.sendTransactions() - sending transaction on account " + transaction[i].getAccountNumber());
 
              try {
                  Network.send(transaction[i]);                            /* Transmit current transaction */
@@ -199,7 +201,8 @@ public class Client extends Thread {
                  throw new RuntimeException(e);
              }
 
-             System.out.println("\n DEBUG : Client.receiveTransactions() - receiving updated transaction on account " + transact.getAccountNumber());
+             System.out.print("");
+//             System.out.println("\n DEBUG : Client.receiveTransactions() - receiving updated transaction on account " + transact.getAccountNumber());
             
             System.out.println(transact);                               /* Display updated transaction */    
             i++;
