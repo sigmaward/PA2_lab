@@ -446,18 +446,17 @@ public class Network extends Thread {
      */
          public static boolean transferOut(Transactions outPacket) throws InterruptedException
         {
-            //consumer
-            items2.acquire();
-            mutex2.acquire();
+            //producer
+            spaces1.acquire();
+            mutex1.acquire();
             outGoingPacket[inputIndexServer].setAccountNumber(outPacket.getAccountNumber());
             outGoingPacket[inputIndexServer].setOperationType(outPacket.getOperationType());
             outGoingPacket[inputIndexServer].setTransactionAmount(outPacket.getTransactionAmount());
             outGoingPacket[inputIndexServer].setTransactionBalance(outPacket.getTransactionBalance());
             outGoingPacket[inputIndexServer].setTransactionError(outPacket.getTransactionError());
             outGoingPacket[inputIndexServer].setTransactionStatus("transferred");
-            mutex2.release();
-            spaces2.release();
-
+            mutex1.release();
+            items1.release();
             
             /* System.out.println("\n DEBUG : Network.transferOut() - index inputIndexServer " + inputIndexServer); */
             /* System.out.println("\n DEBUG : Network.transferOut() - account number " + outGoingPacket[inputIndexServer].getAccountNumber()); */
@@ -486,9 +485,9 @@ public class Network extends Thread {
      */
        public static boolean transferIn(Transactions inPacket) throws InterruptedException
         {
-            //producer
-            spaces1.acquire();
-            mutex1.acquire();
+            //consumer
+            items2.acquire();
+            mutex2.acquire();
             //critical section
             inPacket.setAccountNumber(inComingPacket[outputIndexServer].getAccountNumber());
             inPacket.setOperationType(inComingPacket[outputIndexServer].getOperationType());
@@ -496,8 +495,8 @@ public class Network extends Thread {
             inPacket.setTransactionBalance(inComingPacket[outputIndexServer].getTransactionBalance());
             inPacket.setTransactionError(inComingPacket[outputIndexServer].getTransactionError());
             inPacket.setTransactionStatus("received");
-            mutex1.release();
-            items1.release();
+            mutex2.release();
+            spaces2.release();
 
             /* System.out.println("\n DEBUG : Network.transferIn() - index outputIndexServer " + outputIndexServer); */
             /* System.out.println("\n DEBUG : Network.transferIn() - account number " + inPacket.getAccountNumber()); */
