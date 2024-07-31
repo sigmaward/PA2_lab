@@ -507,7 +507,7 @@ public class Network extends Thread {
             {
                 setInBufferStatus("empty");
 
-                /* System.out.println("\n DEBUG : Network.transferIn() - inComingBuffer status " + getInBufferStatus()); */
+                 System.out.println("\n DEBUG : Network.transferIn() - inComingBuffer status " + getInBufferStatus());
             }
             else
             {
@@ -586,7 +586,7 @@ public class Network extends Thread {
      */
     public void run()
     {	
-    	/* System.out.println("\n DEBUG : Network.run() - starting network thread"); */
+        System.out.println("\n DEBUG : Network.run() - starting network thread");
     	
     	while (true)
     	{
