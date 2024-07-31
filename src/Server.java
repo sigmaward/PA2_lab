@@ -28,7 +28,7 @@ public class Server extends Thread {
 	private static String serverThreadRunningStatus1;	 /* Running status of thread 1 - idle, running, terminated */
 	private static String serverThreadRunningStatus2;	 /* Running status of thread 2 - idle, running, terminated */
 
-    private static String serverThreadRunningStatus3;
+//    private static String serverThreadRunningStatus3;
 
     /** 
      * Constructor method of Client class
@@ -55,14 +55,15 @@ public class Server extends Thread {
     			System.out.println("\n Terminating server application, network unavailable");
     			System.exit(0);
     		}
-    	} else if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus2 == null) {
+    	} else /*if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus2 == null)*/ {
             serverThreadId = stid;							/* unshared variable so each thread has its own copy */
             serverThreadRunningStatus2 = "idle";
-        } else if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus3 == null){
-            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
-            serverThreadRunningStatus3 = "idle";
-
         }
+//        else if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus3 == null){
+//            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
+//            serverThreadRunningStatus3 = "idle";
+//
+//        }
 
 //        if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus2 == null) {
 //            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
@@ -197,13 +198,13 @@ public class Server extends Thread {
              return serverThreadRunningStatus2;
          }
 
-         public String getServerThreadRunningStatus3(){
-             return serverThreadRunningStatus3;
-         }
+//         public String getServerThreadRunningStatus3(){
+//             return serverThreadRunningStatus3;
+//         }
 
-         public void setServerThreadRunningStatus3(String runningStatus){
-             serverThreadRunningStatus3 = runningStatus;
-         }
+//         public void setServerThreadRunningStatus3(String runningStatus){
+//             serverThreadRunningStatus3 = runningStatus;
+//         }
 
              
         /** 
@@ -489,7 +490,7 @@ public class Server extends Thread {
         Transactions trans = new Transactions();
         long serverStartTime1, serverEndTime1;
         long serverStartTime2, serverEndTime2;
-        long serverStartTime3, serverEndTime3;
+//        long serverStartTime3, serverEndTime3;
 
         if (getServerThreadId().equals("1"))
         {
@@ -511,16 +512,6 @@ public class Server extends Thread {
             setServerThreadRunningStatus2("Terminated");
 
         }
-        if (getServerThreadId().equals("3"))
-        {
-            serverStartTime3 = System.currentTimeMillis();
-            processTransactions(trans);
-            serverEndTime3 = System.currentTimeMillis();
-            System.out.println("\n Terminating server(3) thread - " + " Running time " + (serverEndTime3 - serverStartTime3) + " milliseconds");
-
-            //set status to terminated
-            setServerThreadRunningStatus3("Terminated"); //do i capitalize it?
-        }
 //        if (getServerThreadId().equals("3"))
 //        {
 //            serverStartTime3 = System.currentTimeMillis();
@@ -531,22 +522,13 @@ public class Server extends Thread {
 //            //set status to terminated
 //            setServerThreadRunningStatus3("Terminated"); //do i capitalize it?
 //        }
-//        if (getServerThreadId().equals("2")){
-//            serverStartTime2 = System.currentTimeMillis();
-//            processTransactions(trans);
-//            serverEndTime2 = System.currentTimeMillis();
-//            System.out.println("\n Terminating server(2) thread - " + " Running time " + (serverEndTime2 - serverStartTime2) + " milliseconds");
-//
-//            //set status to terminated
-//            setServerThreadRunningStatus2("Terminated");
-//
-//        }
+
 
 
 
         /* .....................................................................................................................................................................................................*/
         //if thread1 is terminated and thread2 is terminated:
-        if (getServerThreadRunningStatus1().equals("Terminated") && getServerThreadRunningStatus2().equals("Terminated") && getServerThreadRunningStatus3().equals("Terminated"))
+        if (getServerThreadRunningStatus1().equals("Terminated") && getServerThreadRunningStatus2().equals("Terminated") /*&& getServerThreadRunningStatus3().equals("Terminated")*/)
         {
             Network.disconnect(Network.getServerIP());
         }

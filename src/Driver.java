@@ -29,10 +29,10 @@ public class Driver {
 
         Server server1= new Server("1");
         Server server2 = new Server ("2");
-        Server server3 = new Server ("3");
+
         server1.start();
         server2.start();
-        server3.start();
+
 
         
       /*..............................................................................................................................................................*/
