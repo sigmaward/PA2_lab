@@ -36,7 +36,7 @@ public class Server extends Thread {
      * @return 
      * @param stid
      */
-    Server(String stid)
+    Server(String stid) //don't forget!!!!!!!!!!!!!!!!!!!!!
     {
     	if ( !(Network.getServerConnectionStatus().equals("connected")))
     	{
@@ -55,12 +55,25 @@ public class Server extends Thread {
     			System.out.println("\n Terminating server application, network unavailable");
     			System.exit(0);
     		}
-    	}
-    	else
-    	{
-    		serverThreadId = stid;							/* unshared variable so each thread has its own copy */
-    		serverThreadRunningStatus2 = "idle";				
-    	}
+    	} else if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus2 == null) {
+            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
+            serverThreadRunningStatus2 = "idle";
+        } else if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus3 == null){
+            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
+            serverThreadRunningStatus3 = "idle";
+
+        }
+
+//        if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus2 == null) {
+//            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
+//            serverThreadRunningStatus2 = "idle";
+//
+//        }
+//        if ((Network.getServerConnectionStatus().equals("connected")) && serverThreadRunningStatus3 == null){
+//            serverThreadId = stid;							/* unshared variable so each thread has its own copy */
+//            serverThreadRunningStatus3 = "idle";
+//
+//        }
     }
   
     /** 
@@ -283,10 +296,11 @@ public class Server extends Thread {
          /* Process the accounts until the client disconnects */
          while ((!Network.getClientConnectionStatus().equals("disconnected")))
          {
-        	 while ( (Network.getInBufferStatus().equals("empty") && !Network.getClientConnectionStatus().equals("disconnected")) )
-        	 {
-        		 Thread.yield(); 	/* Yield the cpu if the network input buffer is empty */
-        	 } //uncommented
+             System.out.print(""); //WTFFFFFFFFFFFFFFFFF
+//        	 while ( (Network.getInBufferStatus().equals("empty") && !Network.getClientConnectionStatus().equals("disconnected")) )
+//        	 {
+//        		 Thread.yield(); 	/* Yield the cpu if the network input buffer is empty */
+//        	 } //uncommented
         	 
         	 if (!Network.getInBufferStatus().equals("empty"))
         	 { 
@@ -330,10 +344,10 @@ public class Server extends Thread {
 					} 
 
             	
-        		 while (Network.getOutBufferStatus().equals("full"))
-        		 {
-        			 Thread.yield();		/* Yield the cpu if the network output buffer is full */
-        		 }
+//        		 while (Network.getOutBufferStatus().equals("full"))
+//        		 {
+//        			 Thread.yield();		/* Yield the cpu if the network output buffer is full */
+//        		 }
         		
         		 /* System.out.println("\n DEBUG : Server.processTransactions() - transferring out account " + trans.getAccountNumber()); */
 
@@ -361,7 +375,7 @@ public class Server extends Thread {
      public double deposit(int i, double amount)
      {  double curBalance;      /* Current account balance */
 
-         synchronized (account[i])
+         synchronized (this)
          {
              curBalance = account[i].getBalance( );          /* Get current account balance */
 
@@ -399,7 +413,7 @@ public class Server extends Thread {
  
      public double withdraw(int i, double amount)
      {
-         synchronized (account[i]){
+         synchronized (this){
              double curBalance;      /* Current account balance */ //put it outside of sync block????
              curBalance = account[i].getBalance( );          /* Get current account balance */
 
@@ -428,7 +442,7 @@ public class Server extends Thread {
         //see slide 24 tut 2
          // sometimes it is more wasteful to synchronize the whole method when you only need to sync a small portion of the code
 
-         synchronized (account[i]){
+         synchronized (this){
              double curBalance;      /* Current account balance */
              curBalance = account[i].getBalance( );          /* Get current account balance */
 
@@ -480,16 +494,6 @@ public class Server extends Thread {
             //set status to terminated
             setServerThreadRunningStatus1("Terminated"); //do i capitalize it?
         }
-        if (getServerThreadId().equals("3"))
-        {
-            serverStartTime3 = System.currentTimeMillis();
-            processTransactions(trans);
-            serverEndTime3 = System.currentTimeMillis();
-            System.out.println("\n Terminating server(3) thread - " + " Running time " + (serverEndTime3 - serverStartTime3) + " milliseconds");
-
-            //set status to terminated
-            setServerThreadRunningStatus3("Terminated"); //do i capitalize it?
-        }
         if (getServerThreadId().equals("2")){
             serverStartTime2 = System.currentTimeMillis();
             processTransactions(trans);
@@ -500,6 +504,36 @@ public class Server extends Thread {
             setServerThreadRunningStatus2("Terminated");
 
         }
+        if (getServerThreadId().equals("3"))
+        {
+            serverStartTime3 = System.currentTimeMillis();
+            processTransactions(trans);
+            serverEndTime3 = System.currentTimeMillis();
+            System.out.println("\n Terminating server(3) thread - " + " Running time " + (serverEndTime3 - serverStartTime3) + " milliseconds");
+
+            //set status to terminated
+            setServerThreadRunningStatus3("Terminated"); //do i capitalize it?
+        }
+//        if (getServerThreadId().equals("3"))
+//        {
+//            serverStartTime3 = System.currentTimeMillis();
+//            processTransactions(trans);
+//            serverEndTime3 = System.currentTimeMillis();
+//            System.out.println("\n Terminating server(3) thread - " + " Running time " + (serverEndTime3 - serverStartTime3) + " milliseconds");
+//
+//            //set status to terminated
+//            setServerThreadRunningStatus3("Terminated"); //do i capitalize it?
+//        }
+//        if (getServerThreadId().equals("2")){
+//            serverStartTime2 = System.currentTimeMillis();
+//            processTransactions(trans);
+//            serverEndTime2 = System.currentTimeMillis();
+//            System.out.println("\n Terminating server(2) thread - " + " Running time " + (serverEndTime2 - serverStartTime2) + " milliseconds");
+//
+//            //set status to terminated
+//            setServerThreadRunningStatus2("Terminated");
+//
+//        }
 
 
 
