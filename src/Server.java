@@ -298,10 +298,10 @@ public class Server extends Thread {
          while ((!Network.getClientConnectionStatus().equals("disconnected")))
          {
              System.out.print(""); //WTFFFFFFFFFFFFFFFFF
-//        	 while ( (Network.getInBufferStatus().equals("empty") && !Network.getClientConnectionStatus().equals("disconnected")) )
-//        	 {
-//        		 Thread.yield(); 	/* Yield the cpu if the network input buffer is empty */
-//        	 } //uncommented
+        	 while ( (Network.getInBufferStatus().equals("empty") && !Network.getClientConnectionStatus().equals("disconnected")) )
+        	 {
+        		 Thread.yield(); 	/* Yield the cpu if the network input buffer is empty */
+        	 } //uncommented
         	 
         	 if (!Network.getInBufferStatus().equals("empty"))
         	 {
@@ -349,10 +349,10 @@ public class Server extends Thread {
 					} 
 
             	
-//        		 while (Network.getOutBufferStatus().equals("full"))
-//        		 {
-//        			 Thread.yield();		/* Yield the cpu if the network output buffer is full */
-//        		 }
+        		 while (Network.getOutBufferStatus().equals("full"))
+        		 {
+        			 Thread.yield();		/* Yield the cpu if the network output buffer is full */
+        		 }
                  System.out.print("");
         		 /* System.out.println("\n DEBUG : Server.processTransactions() - transferring out account " + trans.getAccountNumber()); */
 
