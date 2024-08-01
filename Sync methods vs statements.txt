@@ -1,0 +1,5 @@
+We chose to synchronize statements only because imagine client1 wants to deposit in account[0], you don't want client2 to also work on account[0]
+However, client2 could want to do some work on account[1], so it is wiser to synchronize account [i]
+In fact, if you sync the whole deposit method, and Thread1 is doing something you're blocking the deposit function to other to the other Threads (no other threads can perform this certain function if you sync the whole method).
+Thus, it is more wasteful to synchronize the whole method when you only need to sync a small portion of the code
+        
