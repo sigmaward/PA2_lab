@@ -379,7 +379,7 @@ public class Server extends Thread {
      public double deposit(int i, double amount)
      {  double curBalance;      /* Current account balance */
 
-         synchronized (this)
+         synchronized (account[i])
          {
              curBalance = account[i].getBalance( );          /* Get current account balance */
 
@@ -418,7 +418,7 @@ public class Server extends Thread {
  
      public double withdraw(int i, double amount)
      {
-         synchronized (this){
+         synchronized (account[i]){
              double curBalance;      /* Current account balance */ //put it outside of sync block????
              curBalance = account[i].getBalance( );          /* Get current account balance */
 
@@ -448,7 +448,7 @@ public class Server extends Thread {
         //see slide 24 tut 2
          // sometimes it is more wasteful to synchronize the whole method when you only need to sync a small portion of the code
 
-         synchronized (this){
+         synchronized (account[i]){
              double curBalance;      /* Current account balance */
              curBalance = account[i].getBalance( );          /* Get current account balance */
 

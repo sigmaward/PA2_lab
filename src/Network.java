@@ -603,6 +603,8 @@ public class Network extends Thread {
             else
                 break;
 
+            //server disconnect only when both threads have terminated
+
 
     	}
     }
